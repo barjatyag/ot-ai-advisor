@@ -2,7 +2,7 @@
   "name": "ot-ai-advisor",
   "version": "1.0.0",
   "private": true,
-    "scripts": {
+  "scripts": {
     "build": "next build",
     "start": "next start"
   },

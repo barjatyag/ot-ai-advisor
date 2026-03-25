@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 
+export const runtime = "nodejs"; // 👈 IMPORTANT FIX
+
 export async function POST(req) {
   try {
     const { input } = await req.json();
@@ -13,8 +15,7 @@ export async function POST(req) {
       messages: [
         {
           role: "system",
-          content: `
-You are an OT Cybersecurity Expert.
+          content: `You are an OT Cybersecurity Expert.
 
 Respond in this format:
 
@@ -27,8 +28,7 @@ Risks:
 - ...
 
 Recommendations:
-- ...
-`,
+- ...`,
         },
         {
           role: "user",
@@ -45,7 +45,9 @@ Recommendations:
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({
+        error: error.message || "API error",
+      }),
       { status: 500 }
     );
   }

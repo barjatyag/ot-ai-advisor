@@ -1,33 +1,28 @@
-import OpenAI from "openai";
+const completion = await openai.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages: [
+    {
+      role: "system",
+      content: `
+You are an OT Cybersecurity Expert.
 
-export async function POST(req) {
-  try {
-    const { input } = await req.json();
+Analyze the input and respond in this EXACT format:
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+Risk Score: (High / Medium / Low)
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: "You are an OT cybersecurity expert." },
-        { role: "user", content: input },
-      ],
-    });
+Findings:
+- ...
 
-    return new Response(
-      JSON.stringify({
-        result: completion.choices[0].message.content,
-      }),
-      { status: 200 }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-      }),
-      { status: 500 }
-    );
-  }
-}
+Risks:
+- ...
+
+Recommendations:
+- ...
+`,
+    },
+    {
+      role: "user",
+      content: input,
+    },
+  ],
+});

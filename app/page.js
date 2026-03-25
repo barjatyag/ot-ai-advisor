@@ -12,7 +12,7 @@ export default function Home() {
     });
 
     const data = await res.json();
-    setResult(data.result);
+    setResult(data.result || data.error);
   };
 
   return (

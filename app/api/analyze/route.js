@@ -1,43 +1,52 @@
-export const runtime = "nodejs";
+import OpenAI from "openai";
+
+export const runtime = "nodejs"; // 👈 IMPORTANT FIX
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const input = body.input;
+    const { input } = await req.json();
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: "You are an OT cybersecurity expert.",
-          },
-          {
-            role: "user",
-            content: input,
-          },
-        ],
-      }),
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const data = await response.json();
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `You are an OT Cybersecurity Expert.
+
+Respond in this format:
+
+Risk Score: (High / Medium / Low)
+
+Findings:
+- ...
+
+Risks:
+- ...
+
+Recommendations:
+- ...`,
+        },
+        {
+          role: "user",
+          content: input,
+        },
+      ],
+    });
 
     return new Response(
       JSON.stringify({
-        result: data?.choices?.[0]?.message?.content || "No response",
+        result: completion.choices[0].message.content,
       }),
       { status: 200 }
     );
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: error.message || "Error occurred",
+        error: error.message || "API error",
       }),
       { status: 500 }
     );

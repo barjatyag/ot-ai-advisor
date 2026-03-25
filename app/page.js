@@ -25,11 +25,11 @@ const analyze = async () => {
 
     const data = await res.json();
 
-    setResult(data.result || data.error || "No response");
+    setResult(data?.result || data?.error || "No response");
   } catch (err) {
     console.error(err);
     setResult(err.message || "Error connecting to API");
+  } finally {
+    setLoading(false); // ✅ ALWAYS resets
   }
-
-  setLoading(false);
 };

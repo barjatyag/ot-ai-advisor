@@ -11,15 +11,8 @@ export async function POST(req) {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        {
-          role: "system",
-          content:
-            "You are an OT Cybersecurity expert. Analyze risks and give recommendations.",
-        },
-        {
-          role: "user",
-          content: input,
-        },
+        { role: "system", content: "You are an OT cybersecurity expert." },
+        { role: "user", content: input },
       ],
     });
 
@@ -31,7 +24,9 @@ export async function POST(req) {
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: "Error" }),
+      JSON.stringify({
+        error: error.message,
+      }),
       { status: 500 }
     );
   }

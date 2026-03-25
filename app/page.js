@@ -4,8 +4,10 @@ const analyze = async () => {
     return;
   }
 
+  if (loading) return;
+
   setLoading(true);
-  setResult("");
+  setResult("Analyzing your architecture...");
 
   try {
     const res = await fetch("/api/analyze", {
@@ -16,10 +18,17 @@ const analyze = async () => {
       body: JSON.stringify({ input }),
     });
 
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "API error");
+    }
+
     const data = await res.json();
+
     setResult(data.result || data.error || "No response");
-  } catch {
-    setResult("Error connecting to API");
+  } catch (err) {
+    console.error(err);
+    setResult(err.message || "Error connecting to API");
   }
 
   setLoading(false);

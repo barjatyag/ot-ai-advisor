@@ -1,19 +1,44 @@
-const analyze = async () => {
-  try {
-    const res = await fetch("/api/analyze", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ input }),
-    });
+export const dynamic = "force-dynamic";
 
-    const data = await res.json();
+"use client";
+import { useState } from "react";
 
-    console.log("API Response:", data); // 👈 DEBUG
+export default function Home() {
+  const [input, setInput] = useState("");
+  const [result, setResult] = useState("");
 
-    setResult(data.result || data.error || "No response");
-  } catch (err) {
-    setResult("Error connecting to API");
-  }
-};
+  const analyze = async () => {
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input }),
+      });
+
+      const data = await res.json();
+      setResult(data.result || data.error || "No response");
+    } catch (err) {
+      setResult("Error connecting to API");
+    }
+  };
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>🚀 OT AI Cybersecurity Advisor</h1>
+
+      <textarea
+        placeholder="Paste your OT architecture..."
+        style={{ width: "100%", height: 120 }}
+        onChange={(e) => setInput(e.target.value)}
+      />
+
+      <button onClick={analyze} style={{ marginTop: 10 }}>
+        Analyze
+      </button>
+
+      <pre style={{ marginTop: 20 }}>{result}</pre>
+    </div>
+  );
+}

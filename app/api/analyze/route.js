@@ -15,22 +15,7 @@ export async function POST(req) {
         messages: [
           {
             role: "system",
-            content: `
-You are an OT Cybersecurity Expert.
-
-Respond EXACTLY in this format:
-
-Risk Score: High / Medium / Low
-
-Findings:
-- ...
-
-Risks:
-- ...
-
-Recommendations:
-- ...
-`,
+            content: "You are an OT cybersecurity expert.",
           },
           {
             role: "user",
@@ -42,9 +27,22 @@ Recommendations:
 
     const data = await response.json();
 
+    // 🔥 DEBUG LOG
+    console.log("OpenAI Response:", data);
+
+    // ❗ HANDLE ERROR
+    if (!response.ok) {
+      return new Response(
+        JSON.stringify({
+          error: data.error?.message || "OpenAI API error",
+        }),
+        { status: 500 }
+      );
+    }
+
     return new Response(
       JSON.stringify({
-        result: data?.choices?.[0]?.message?.content || "No response",
+        result: data.choices?.[0]?.message?.content || "No AI response",
       }),
       { status: 200 }
     );

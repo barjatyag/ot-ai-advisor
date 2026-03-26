@@ -1,57 +1,35 @@
-export const dynamic = "force-dynamic";
-
 "use client";
-
 import { useState } from "react";
 
 export default function Home() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const analyze = async () => {
-    if (!input.trim()) {
-      setResult("Please enter architecture details");
-      return;
-    }
+    const res = await fetch("/api/analyze", {
+      method: "POST",
+      body: JSON.stringify({ input }),
+    });
 
-    if (loading) return;
-
-    setLoading(true);
-    setResult("Analyzing your architecture...");
-
-    try {
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ input }),
-      });
-
-      const data = await res.json();
-      setResult(data?.result || data?.error || "No response");
-    } catch (err) {
-      setResult("Error connecting to API");
-    } finally {
-      setLoading(false);
-    }
+    const data = await res.json();
+    setResult(data.result);
   };
 
   return (
-    <div style={{ padding: 40 }}>
+    <div style={{ padding: 20 }}>
       <h1>🚀 OT AI Cybersecurity Advisor</h1>
 
       <textarea
+        placeholder="Paste your OT architecture..."
         style={{ width: "100%", height: 120 }}
         onChange={(e) => setInput(e.target.value)}
       />
 
-      <button onClick={analyze}>
-        {loading ? "Analyzing..." : "Analyze"}
+      <button onClick={analyze} style={{ marginTop: 10 }}>
+        Analyze
       </button>
 
-      <pre>{result}</pre>
+      <pre style={{ marginTop: 20 }}>{result}</pre>
     </div>
   );
 }

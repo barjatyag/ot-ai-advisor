@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { jsPDF } from "jspdf";
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -37,7 +36,10 @@ export default function Home() {
     }
   };
 
-  const downloadPDF = () => {
+  // ✅ Dynamic PDF import (NO build error)
+  const downloadPDF = async () => {
+    const { jsPDF } = await import("jspdf");
+
     const doc = new jsPDF();
     const lines = doc.splitTextToSize(result, 180);
 
@@ -50,10 +52,11 @@ export default function Home() {
     doc.save("OT_Report.pdf");
   };
 
+  // ✅ Risk color indicator
   const getRiskColor = () => {
-    if (result.includes("High")) return "red";
-    if (result.includes("Medium")) return "orange";
-    return "green";
+    if (result.includes("High")) return "#ef4444";
+    if (result.includes("Medium")) return "#f59e0b";
+    return "#22c55e";
   };
 
   return (
@@ -83,6 +86,7 @@ export default function Home() {
               borderLeft: `6px solid ${getRiskColor()}`,
             }}
           >
+            <h3>📊 Cybersecurity Report</h3>
             <pre style={styles.resultText}>{result}</pre>
           </div>
 
@@ -95,6 +99,7 @@ export default function Home() {
   );
 }
 
+// 🎨 Clean UI styles
 const styles = {
   container: {
     background: "#0f172a",

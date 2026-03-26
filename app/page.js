@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 "use client";
 
 import { useState } from "react";
@@ -43,17 +41,16 @@ export default function Home() {
       <h1>🚀 OT AI Cybersecurity Advisor</h1>
 
       <textarea
-        placeholder="Paste your OT architecture..."
         style={{ width: "100%", height: 120 }}
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
 
-      <button onClick={analyze} style={{ marginTop: 10 }}>
+      <button onClick={analyze}>
         {loading ? "Analyzing..." : "Analyze"}
       </button>
 
-      <pre style={{ marginTop: 20 }}>{result}</pre>
+      <pre>{result}</pre>
     </div>
   );
 }

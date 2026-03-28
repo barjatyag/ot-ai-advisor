@@ -67,10 +67,11 @@ export default function Home() {
 
   return (
     <div style={styles.app}>
+      
       {/* SIDEBAR */}
       <div style={styles.sidebar}>
-        <h2>⚡ OT AI</h2>
-        <ul>
+        <h2 style={{ color: "#3b82f6" }}>⚡ OT AI</h2>
+        <ul style={styles.menu}>
           <li>📊 Dashboard</li>
           <li>🧠 Analyze</li>
           <li>📄 Reports</li>
@@ -80,13 +81,16 @@ export default function Home() {
 
       {/* MAIN */}
       <div style={styles.main}>
+        
         {/* HEADER */}
         <div style={styles.header}>
           <h2>OT Cybersecurity Intelligence Platform</h2>
-          <span>AI-powered risk analytics for critical infrastructure</span>
+          <p style={styles.subtitle}>
+            AI-powered risk analytics for critical infrastructure
+          </p>
         </div>
 
-        {/* INPUT */}
+        {/* INPUT CARD */}
         <div style={styles.card}>
           <h3>🧠 Analyze OT Architecture</h3>
 
@@ -116,22 +120,16 @@ export default function Home() {
         </div>
 
         {/* LOADING */}
-        {loading && (
-          <div style={styles.loading}>
-            🔍 Running AI Cyber Risk Assessment...
-          </div>
-        )}
+        {loading && <div style={styles.loading}>🔍 Running AI Analysis...</div>}
 
         {/* RESULTS */}
         {result && (
           <>
-            {/* TOP METRICS */}
+            {/* METRICS */}
             <div style={styles.topMetrics}>
               <div style={styles.metricBox}>
                 <h4>Risk Level</h4>
-                <p style={{ color: getRiskColor() }}>
-                  {getRiskLevel()}
-                </p>
+                <p style={{ color: getRiskColor() }}>{getRiskLevel()}</p>
               </div>
 
               <div style={styles.metricBox}>
@@ -145,8 +143,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* PROGRESS BAR */}
-            <div style={styles.progressBar}>
+            {/* PROGRESS */}
+            <div style={styles.progress}>
               <div
                 style={{
                   width: `${getRiskScore()}%`,
@@ -159,13 +157,13 @@ export default function Home() {
 
             {/* CHART */}
             <div style={styles.card}>
-              <h3>📊 Risk Score Visualization</h3>
+              <h3>📊 Risk Visualization</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={chartData}>
-                  <XAxis dataKey="name" />
-                  <YAxis domain={[0, 100]} />
+                  <XAxis dataKey="name" stroke="#94a3b8" />
+                  <YAxis domain={[0, 100]} stroke="#94a3b8" />
                   <Tooltip />
-                  <Bar dataKey="value" />
+                  <Bar dataKey="value" fill="#3b82f6" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -175,11 +173,11 @@ export default function Home() {
               <h3>🧠 Executive Summary</h3>
               <p>
                 Your OT environment shows {getRiskLevel()} risk exposure with
-                critical vulnerabilities requiring immediate attention.
+                critical vulnerabilities requiring attention.
               </p>
             </div>
 
-            {/* SECTIONS */}
+            {/* DETAILS */}
             <div style={styles.card}>
               <h3>🔍 Findings</h3>
               <pre>{getSection("Findings:")}</pre>
@@ -196,11 +194,10 @@ export default function Home() {
             </div>
 
             {/* CTA */}
-            <button style={styles.downloadBtn}>
+            <button style={styles.download}>
               📄 Generate Executive Report
             </button>
 
-            {/* TRUST */}
             <div style={styles.footer}>
               Trusted for Energy, Utilities, Industrial OT & Smart Cities
             </div>
@@ -211,34 +208,44 @@ export default function Home() {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 FINAL ENTERPRISE STYLES */
 
 const styles = {
   app: {
     display: "flex",
     fontFamily: "Arial",
-    background: "linear-gradient(135deg, #020617, #0f172a)",
-    color: "white",
+    background: "radial-gradient(circle at top, #0f172a, #020617)",
+    color: "#e2e8f0",
     minHeight: "100vh",
   },
   sidebar: {
     width: "220px",
-    background: "#020617",
     padding: "20px",
+    background: "#020617",
+    borderRight: "1px solid #1e293b",
+  },
+  menu: {
+    marginTop: "20px",
+    lineHeight: "2",
+    color: "#94a3b8",
   },
   main: {
     flex: 1,
-    padding: "20px",
+    padding: "30px",
   },
   header: {
     marginBottom: "20px",
   },
+  subtitle: {
+    color: "#94a3b8",
+  },
   card: {
-    background: "#1e293b",
+    background: "linear-gradient(145deg, #0f172a, #1e293b)",
     padding: "20px",
-    borderRadius: "10px",
+    borderRadius: "12px",
     marginBottom: "20px",
-    transition: "0.3s",
+    border: "1px solid #1e293b",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
   },
   textarea: {
     width: "100%",
@@ -251,7 +258,7 @@ const styles = {
   button: {
     marginTop: "10px",
     padding: "10px 15px",
-    background: "#3b82f6",
+    background: "linear-gradient(135deg, #3b82f6, #2563eb)",
     border: "none",
     borderRadius: "6px",
     color: "white",
@@ -268,6 +275,7 @@ const styles = {
   },
   loading: {
     marginTop: "10px",
+    color: "#94a3b8",
   },
   topMetrics: {
     display: "flex",
@@ -275,17 +283,18 @@ const styles = {
     marginBottom: "20px",
   },
   metricBox: {
-    background: "#111827",
+    background: "linear-gradient(145deg, #020617, #0f172a)",
     padding: "15px",
-    borderRadius: "8px",
+    borderRadius: "10px",
     flex: 1,
+    border: "1px solid #1e293b",
   },
-  progressBar: {
+  progress: {
     marginBottom: "20px",
     background: "#1e293b",
     borderRadius: "5px",
   },
-  downloadBtn: {
+  download: {
     padding: "12px 20px",
     background: "#22c55e",
     border: "none",
@@ -295,6 +304,6 @@ const styles = {
   },
   footer: {
     marginTop: "30px",
-    opacity: 0.6,
+    color: "#94a3b8",
   },
 };

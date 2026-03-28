@@ -1,6 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -32,11 +40,13 @@ export default function Home() {
     }
   };
 
+  // 🎯 Extract sections
   const getSection = (title) => {
     const part = result.split(title)[1];
     return part ? part.split("\n\n")[0].trim() : "";
   };
 
+  // 🎯 Risk logic
   const getRiskLevel = () => {
     if (result.includes("High")) return "High";
     if (result.includes("Medium")) return "Medium";
@@ -48,6 +58,19 @@ export default function Home() {
     if (getRiskLevel() === "Medium") return "#f59e0b";
     return "#22c55e";
   };
+
+  const getRiskScore = () => {
+    if (result.includes("High")) return 90;
+    if (result.includes("Medium")) return 60;
+    return 30;
+  };
+
+  const chartData = [
+    {
+      name: "Risk Score",
+      value: getRiskScore(),
+    },
+  ];
 
   return (
     <div style={styles.app}>
@@ -95,9 +118,10 @@ export default function Home() {
           </div>
         )}
 
-        {/* DASHBOARD CARDS */}
+        {/* RESULT */}
         {result && (
           <>
+            {/* METRICS */}
             <div style={styles.grid}>
               <div style={styles.metricCard}>
                 <h4>Risk Level</h4>
@@ -107,14 +131,30 @@ export default function Home() {
               </div>
 
               <div style={styles.metricCard}>
-                <h4>System Type</h4>
-                <p>SCADA / OT</p>
+                <h4>Risk Score</h4>
+                <p style={{ fontSize: "24px" }}>
+                  {getRiskScore()} / 100
+                </p>
               </div>
 
               <div style={styles.metricCard}>
                 <h4>Status</h4>
                 <p>Analyzed</p>
               </div>
+            </div>
+
+            {/* 📊 CHART */}
+            <div style={styles.card}>
+              <h3>📊 Risk Score Visualization</h3>
+
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={chartData}>
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip />
+                  <Bar dataKey="value" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
 
             {/* RESULTS */}

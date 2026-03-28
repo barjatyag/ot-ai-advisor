@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -12,8 +12,6 @@ export default function Home() {
       setResult("Please enter architecture details");
       return;
     }
-
-    if (loading) return;
 
     setLoading(true);
     setResult("");
@@ -34,23 +32,6 @@ export default function Home() {
     }
   };
 
-  // 🔥 Dynamic PDF
-  const downloadPDF = async () => {
-    const { jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-
-    const lines = doc.splitTextToSize(result, 180);
-
-    doc.setFontSize(14);
-    doc.text("OT Cybersecurity Report", 10, 10);
-
-    doc.setFontSize(10);
-    doc.text(lines, 10, 20);
-
-    doc.save("OT_Report.pdf");
-  };
-
-  // 🎯 Extract sections
   const getSection = (title) => {
     const part = result.split(title)[1];
     return part ? part.split("\n\n")[0].trim() : "";
@@ -69,99 +50,90 @@ export default function Home() {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.app}>
       
-      {/* 🚀 HERO */}
-      <h1 style={styles.title}>🚀 OT AI Cybersecurity Advisor</h1>
-      <p style={styles.subtitle}>
-        AI-powered risk assessment for SCADA, OT & critical infrastructure
-      </p>
-
-      {/* INPUT */}
-      <textarea
-        placeholder="Paste your OT architecture..."
-        style={styles.textarea}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-
-      {/* BUTTONS */}
-      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-        <button style={styles.button} onClick={analyze}>
-          {loading ? "Analyzing..." : "Analyze"}
-        </button>
-
-        <button
-          style={styles.secondaryBtn}
-          onClick={() =>
-            setInput(
-              "SCADA system with no segmentation and legacy protocols"
-            )
-          }
-        >
-          Try Sample
-        </button>
+      {/* SIDEBAR */}
+      <div style={styles.sidebar}>
+        <h2>⚡ OT AI</h2>
+        <ul>
+          <li>📊 Dashboard</li>
+          <li>🧠 Analyze</li>
+          <li>📄 Reports</li>
+          <li>⚙️ Settings</li>
+        </ul>
       </div>
 
-      {/* LOADING */}
-      {loading && (
-        <div style={styles.loading}>
-          ⏳ Running AI Cyber Risk Analysis...
+      {/* MAIN */}
+      <div style={styles.main}>
+        
+        {/* HEADER */}
+        <div style={styles.header}>
+          <h2>OT Cybersecurity Dashboard</h2>
+          <span>Enterprise Risk Intelligence</span>
         </div>
-      )}
 
-      {/* RESULT */}
-      {result && (
-        <>
-          {/* RISK SCORE */}
-          <div style={styles.riskBox}>
-            ⚠️ Risk Level:
-            <span style={{ color: getRiskColor(), marginLeft: 10 }}>
-              {getRiskLevel()}
-            </span>
-          </div>
+        {/* INPUT CARD */}
+        <div style={styles.card}>
+          <h3>🧠 Analyze OT Architecture</h3>
 
-          {/* CARDS */}
-          <div style={styles.card}>
-            <h3>🔍 Findings</h3>
-            <pre>{getSection("Findings:")}</pre>
-          </div>
+          <textarea
+            placeholder="Paste your OT architecture..."
+            style={styles.textarea}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
 
-          <div style={styles.card}>
-            <h3>⚠️ Risks</h3>
-            <pre>{getSection("Risks:")}</pre>
-          </div>
-
-          <div style={styles.card}>
-            <h3>✅ Recommendations</h3>
-            <pre>{getSection("Recommendations:")}</pre>
-          </div>
-
-          {/* DOWNLOAD */}
-          <button style={styles.button} onClick={downloadPDF}>
-            📄 Download Report
+          <button style={styles.button} onClick={analyze}>
+            {loading ? "Analyzing..." : "Run Analysis"}
           </button>
+        </div>
 
-          {/* PRO CTA */}
-          <div style={styles.proBox}>
-            🔒 Upgrade to Pro:
-            <ul>
-              <li>📄 Detailed PDF Report</li>
-              <li>📊 Compliance Mapping (NIST, IEC)</li>
-              <li>📈 Risk Dashboard</li>
-            </ul>
+        {/* LOADING */}
+        {loading && (
+          <div style={styles.loading}>
+            🔍 Running AI Risk Assessment...
           </div>
-        </>
-      )}
+        )}
 
-      {/* TRUST */}
-      <div style={styles.footer}>
-        Used for:
-        <ul>
-          <li>⚡ Energy & Utilities</li>
-          <li>🏭 Industrial OT</li>
-          <li>🏙 Smart Cities</li>
-        </ul>
+        {/* DASHBOARD CARDS */}
+        {result && (
+          <>
+            <div style={styles.grid}>
+              <div style={styles.metricCard}>
+                <h4>Risk Level</h4>
+                <p style={{ color: getRiskColor(), fontSize: "20px" }}>
+                  {getRiskLevel()}
+                </p>
+              </div>
+
+              <div style={styles.metricCard}>
+                <h4>System Type</h4>
+                <p>SCADA / OT</p>
+              </div>
+
+              <div style={styles.metricCard}>
+                <h4>Status</h4>
+                <p>Analyzed</p>
+              </div>
+            </div>
+
+            {/* RESULTS */}
+            <div style={styles.card}>
+              <h3>🔍 Findings</h3>
+              <pre>{getSection("Findings:")}</pre>
+            </div>
+
+            <div style={styles.card}>
+              <h3>⚠️ Risks</h3>
+              <pre>{getSection("Risks:")}</pre>
+            </div>
+
+            <div style={styles.card}>
+              <h3>✅ Recommendations</h3>
+              <pre>{getSection("Recommendations:")}</pre>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -170,71 +142,60 @@ export default function Home() {
 /* 🎨 STYLES */
 
 const styles = {
-  container: {
-    background: "#0f172a",
-    minHeight: "100vh",
-    padding: "40px",
-    color: "white",
+  app: {
+    display: "flex",
     fontFamily: "Arial",
-    maxWidth: "900px",
-    margin: "auto",
+    background: "#0f172a",
+    color: "white",
+    minHeight: "100vh",
   },
-  title: {
-    textAlign: "center",
-    fontSize: "32px",
+  sidebar: {
+    width: "220px",
+    background: "#020617",
+    padding: "20px",
   },
-  subtitle: {
-    textAlign: "center",
-    opacity: 0.7,
+  main: {
+    flex: 1,
+    padding: "20px",
+  },
+  header: {
+    marginBottom: "20px",
+  },
+  card: {
+    background: "#1e293b",
+    padding: "20px",
+    borderRadius: "10px",
     marginBottom: "20px",
   },
   textarea: {
     width: "100%",
-    height: "140px",
-    padding: "12px",
-    borderRadius: "8px",
+    height: "120px",
+    marginTop: "10px",
+    padding: "10px",
+    borderRadius: "6px",
     border: "none",
   },
   button: {
-    padding: "10px 16px",
+    marginTop: "10px",
+    padding: "10px 15px",
     background: "#3b82f6",
     border: "none",
     borderRadius: "6px",
     color: "white",
     cursor: "pointer",
   },
-  secondaryBtn: {
-    padding: "10px 16px",
-    background: "#334155",
-    border: "none",
-    borderRadius: "6px",
-    color: "white",
-    cursor: "pointer",
-  },
   loading: {
-    marginTop: "15px",
-    opacity: 0.7,
+    marginTop: "10px",
   },
-  riskBox: {
-    marginTop: "20px",
-    fontSize: "20px",
-    fontWeight: "bold",
+  grid: {
+    display: "flex",
+    gap: "15px",
+    marginBottom: "20px",
   },
-  card: {
-    marginTop: "15px",
-    background: "#1e293b",
-    padding: "15px",
-    borderRadius: "8px",
-  },
-  proBox: {
-    marginTop: "20px",
+  metricCard: {
     background: "#111827",
     padding: "15px",
     borderRadius: "8px",
-    border: "1px solid #334155",
-  },
-  footer: {
-    marginTop: "40px",
-    opacity: 0.6,
+    flex: 1,
   },
 };

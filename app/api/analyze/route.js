@@ -1,56 +1,55 @@
-export const runtime = "nodejs";
+import OpenAI from "openai";
 
 export async function POST(req) {
   try {
     const { input } = await req.json();
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: "You are an OT cybersecurity expert.",
-          },
-          {
-            role: "user",
-            content: input,
-          },
-        ],
-      }),
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const data = await response.json();
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an OT Cybersecurity Expert.
 
-    // 🔥 DEBUG LOG
-    console.log("OpenAI Response:", data);
+IMPORTANT:
+Always respond STRICTLY in this format:
 
-    // ❗ HANDLE ERROR
-    if (!response.ok) {
-      return new Response(
-        JSON.stringify({
-          error: data.error?.message || "OpenAI API error",
-        }),
-        { status: 500 }
-      );
-    }
+Risk Score: High / Medium / Low
+
+Findings:
+- Point 1
+- Point 2
+
+Risks:
+- Risk 1
+- Risk 2
+
+Recommendations:
+- Recommendation 1
+- Recommendation 2
+          `,
+        },
+        {
+          role: "user",
+          content: input,
+        },
+      ],
+    });
+
+    const text = completion.choices[0].message.content;
 
     return new Response(
-      JSON.stringify({
-        result: data.choices?.[0]?.message?.content || "No AI response",
-      }),
+      JSON.stringify({ result: text }),
       { status: 200 }
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({
-        error: error.message,
-      }),
+      JSON.stringify({ error: error.message }),
       { status: 500 }
     );
   }

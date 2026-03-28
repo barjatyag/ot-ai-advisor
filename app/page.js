@@ -40,11 +40,6 @@ export default function Home() {
     }
   };
 
-  const getSection = (title) => {
-    const part = result.split(title)[1];
-    return part ? part.split("\n\n")[0].trim() : "";
-  };
-
   const getRiskLevel = () => {
     if (result.includes("High")) return "High";
     if (result.includes("Medium")) return "Medium";
@@ -67,12 +62,12 @@ export default function Home() {
 
   return (
     <div style={styles.app}>
-      
       {/* SIDEBAR */}
       <div style={styles.sidebar}>
         <h2 style={{ color: "#3b82f6" }}>⚡ OT AI</h2>
+
         <ul style={styles.menu}>
-          <li>📊 Dashboard</li>
+          <li style={styles.active}>📊 Dashboard</li>
           <li>🧠 Analyze</li>
           <li>📄 Reports</li>
           <li>⚙️ Settings</li>
@@ -81,17 +76,26 @@ export default function Home() {
 
       {/* MAIN */}
       <div style={styles.main}>
-        
         {/* HEADER */}
         <div style={styles.header}>
-          <h2>OT Cybersecurity Intelligence Platform</h2>
+          <h2 style={styles.gradientTitle}>
+            OT Cybersecurity Intelligence Platform
+          </h2>
           <p style={styles.subtitle}>
             AI-powered risk analytics for critical infrastructure
           </p>
         </div>
 
-        {/* INPUT CARD */}
-        <div style={styles.card}>
+        {/* INPUT */}
+        <div
+          style={styles.card}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.transform = "translateY(-5px)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.transform = "translateY(0)")
+          }
+        >
           <h3>🧠 Analyze OT Architecture</h3>
 
           <textarea
@@ -119,17 +123,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* LOADING */}
-        {loading && <div style={styles.loading}>🔍 Running AI Analysis...</div>}
-
-        {/* RESULTS */}
+        {/* RESULT */}
         {result && (
           <>
             {/* METRICS */}
-            <div style={styles.topMetrics}>
+            <div style={styles.metrics}>
               <div style={styles.metricBox}>
                 <h4>Risk Level</h4>
-                <p style={{ color: getRiskColor() }}>{getRiskLevel()}</p>
+                <p style={{ color: getRiskColor() }}>
+                  {getRiskLevel()}
+                </p>
               </div>
 
               <div style={styles.metricBox}>
@@ -167,40 +170,6 @@ export default function Home() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-
-            {/* SUMMARY */}
-            <div style={styles.card}>
-              <h3>🧠 Executive Summary</h3>
-              <p>
-                Your OT environment shows {getRiskLevel()} risk exposure with
-                critical vulnerabilities requiring attention.
-              </p>
-            </div>
-
-            {/* DETAILS */}
-            <div style={styles.card}>
-              <h3>🔍 Findings</h3>
-              <pre>{getSection("Findings:")}</pre>
-            </div>
-
-            <div style={styles.card}>
-              <h3>⚠️ Risks</h3>
-              <pre>{getSection("Risks:")}</pre>
-            </div>
-
-            <div style={styles.card}>
-              <h3>✅ Recommendations</h3>
-              <pre>{getSection("Recommendations:")}</pre>
-            </div>
-
-            {/* CTA */}
-            <button style={styles.download}>
-              📄 Generate Executive Report
-            </button>
-
-            <div style={styles.footer}>
-              Trusted for Energy, Utilities, Industrial OT & Smart Cities
-            </div>
           </>
         )}
       </div>
@@ -208,13 +177,17 @@ export default function Home() {
   );
 }
 
-/* 🎨 FINAL ENTERPRISE STYLES */
+/* 🎨 STYLES */
 
 const styles = {
   app: {
     display: "flex",
-    fontFamily: "Arial",
-    background: "radial-gradient(circle at top, #0f172a, #020617)",
+    fontFamily: "Inter, Arial",
+    background: `
+      radial-gradient(circle at 20% 0%, rgba(59,130,246,0.25), transparent 40%),
+      radial-gradient(circle at 80% 100%, rgba(34,197,94,0.15), transparent 40%),
+      #020617
+    `,
     color: "#e2e8f0",
     minHeight: "100vh",
   },
@@ -229,12 +202,25 @@ const styles = {
     lineHeight: "2",
     color: "#94a3b8",
   },
+  active: {
+    background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+    padding: "8px",
+    borderRadius: "6px",
+    color: "white",
+  },
   main: {
     flex: 1,
     padding: "30px",
   },
   header: {
     marginBottom: "20px",
+  },
+  gradientTitle: {
+    fontSize: "28px",
+    fontWeight: "700",
+    background: "linear-gradient(90deg, #3b82f6, #22c55e)",
+    WebkitBackgroundClip: "text",
+    color: "transparent",
   },
   subtitle: {
     color: "#94a3b8",
@@ -244,8 +230,9 @@ const styles = {
     padding: "20px",
     borderRadius: "12px",
     marginBottom: "20px",
-    border: "1px solid #1e293b",
+    border: "1px solid rgba(59,130,246,0.2)",
     boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
+    transition: "0.3s",
   },
   textarea: {
     width: "100%",
@@ -257,12 +244,14 @@ const styles = {
   },
   button: {
     marginTop: "10px",
-    padding: "10px 15px",
-    background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+    padding: "10px 18px",
+    background: "linear-gradient(135deg, #3b82f6, #22c55e)",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "white",
+    fontWeight: "600",
     cursor: "pointer",
+    boxShadow: "0 6px 20px rgba(59,130,246,0.4)",
   },
   secondaryBtn: {
     marginTop: "10px",
@@ -273,11 +262,7 @@ const styles = {
     color: "white",
     cursor: "pointer",
   },
-  loading: {
-    marginTop: "10px",
-    color: "#94a3b8",
-  },
-  topMetrics: {
+  metrics: {
     display: "flex",
     gap: "15px",
     marginBottom: "20px",
@@ -293,17 +278,5 @@ const styles = {
     marginBottom: "20px",
     background: "#1e293b",
     borderRadius: "5px",
-  },
-  download: {
-    padding: "12px 20px",
-    background: "#22c55e",
-    border: "none",
-    borderRadius: "6px",
-    color: "white",
-    cursor: "pointer",
-  },
-  footer: {
-    marginTop: "30px",
-    color: "#94a3b8",
   },
 };

@@ -1,55 +1,56 @@
-import OpenAI from "openai";
+export const runtime = "nodejs";
 
 export async function POST(req) {
   try {
     const { input } = await req.json();
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "You are an OT cybersecurity expert.",
+          },
+          {
+            role: "user",
+            content: input,
+          },
+        ],
+      }),
     });
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `
-You are an OT Cybersecurity Expert.
+    const data = await response.json();
 
-IMPORTANT:
-Always respond STRICTLY in this format:
+    // 🔥 DEBUG LOG
+    console.log("OpenAI Response:", data);
 
-Risk Score: High / Medium / Low
-
-Findings:
-- Point 1
-- Point 2
-
-Risks:
-- Risk 1
-- Risk 2
-
-Recommendations:
-- Recommendation 1
-- Recommendation 2
-          `,
-        },
-        {
-          role: "user",
-          content: input,
-        },
-      ],
-    });
-
-    const text = completion.choices[0].message.content;
+    // ❗ HANDLE ERROR
+    if (!response.ok) {
+      return new Response(
+        JSON.stringify({
+          error: data.error?.message || "OpenAI API error",
+        }),
+        { status: 500 }
+      );
+    }
 
     return new Response(
-      JSON.stringify({ result: text }),
+      JSON.stringify({
+        result: data.choices?.[0]?.message?.content || "No AI response",
+      }),
       { status: 200 }
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({
+        error: error.message,
+      }),
       { status: 500 }
     );
   }

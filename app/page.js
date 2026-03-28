@@ -40,13 +40,11 @@ export default function Home() {
     }
   };
 
-  // 🎯 Extract sections
   const getSection = (title) => {
     const part = result.split(title)[1];
     return part ? part.split("\n\n")[0].trim() : "";
   };
 
-  // 🎯 Risk logic
   const getRiskLevel = () => {
     if (result.includes("High")) return "High";
     if (result.includes("Medium")) return "Medium";
@@ -65,16 +63,10 @@ export default function Home() {
     return 30;
   };
 
-  const chartData = [
-    {
-      name: "Risk Score",
-      value: getRiskScore(),
-    },
-  ];
+  const chartData = [{ name: "Risk Score", value: getRiskScore() }];
 
   return (
     <div style={styles.app}>
-      
       {/* SIDEBAR */}
       <div style={styles.sidebar}>
         <h2>⚡ OT AI</h2>
@@ -88,14 +80,13 @@ export default function Home() {
 
       {/* MAIN */}
       <div style={styles.main}>
-        
         {/* HEADER */}
         <div style={styles.header}>
-          <h2>OT Cybersecurity Dashboard</h2>
-          <span>Enterprise Risk Intelligence</span>
+          <h2>OT Cybersecurity Intelligence Platform</h2>
+          <span>AI-powered risk analytics for critical infrastructure</span>
         </div>
 
-        {/* INPUT CARD */}
+        {/* INPUT */}
         <div style={styles.card}>
           <h3>🧠 Analyze OT Architecture</h3>
 
@@ -106,47 +97,69 @@ export default function Home() {
             onChange={(e) => setInput(e.target.value)}
           />
 
-          <button style={styles.button} onClick={analyze}>
-            {loading ? "Analyzing..." : "Run Analysis"}
-          </button>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button style={styles.button} onClick={analyze}>
+              {loading ? "Analyzing..." : "Run Analysis"}
+            </button>
+
+            <button
+              style={styles.secondaryBtn}
+              onClick={() =>
+                setInput(
+                  "SCADA system with no segmentation and legacy protocols"
+                )
+              }
+            >
+              ⚡ Demo
+            </button>
+          </div>
         </div>
 
         {/* LOADING */}
         {loading && (
           <div style={styles.loading}>
-            🔍 Running AI Risk Assessment...
+            🔍 Running AI Cyber Risk Assessment...
           </div>
         )}
 
-        {/* RESULT */}
+        {/* RESULTS */}
         {result && (
           <>
-            {/* METRICS */}
-            <div style={styles.grid}>
-              <div style={styles.metricCard}>
+            {/* TOP METRICS */}
+            <div style={styles.topMetrics}>
+              <div style={styles.metricBox}>
                 <h4>Risk Level</h4>
-                <p style={{ color: getRiskColor(), fontSize: "20px" }}>
+                <p style={{ color: getRiskColor() }}>
                   {getRiskLevel()}
                 </p>
               </div>
 
-              <div style={styles.metricCard}>
+              <div style={styles.metricBox}>
                 <h4>Risk Score</h4>
-                <p style={{ fontSize: "24px" }}>
-                  {getRiskScore()} / 100
-                </p>
+                <p>{getRiskScore()} / 100</p>
               </div>
 
-              <div style={styles.metricCard}>
+              <div style={styles.metricBox}>
                 <h4>Status</h4>
                 <p>Analyzed</p>
               </div>
             </div>
 
-            {/* 📊 CHART */}
+            {/* PROGRESS BAR */}
+            <div style={styles.progressBar}>
+              <div
+                style={{
+                  width: `${getRiskScore()}%`,
+                  background: getRiskColor(),
+                  height: "8px",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+
+            {/* CHART */}
             <div style={styles.card}>
               <h3>📊 Risk Score Visualization</h3>
-
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={chartData}>
                   <XAxis dataKey="name" />
@@ -157,7 +170,16 @@ export default function Home() {
               </ResponsiveContainer>
             </div>
 
-            {/* RESULTS */}
+            {/* SUMMARY */}
+            <div style={styles.card}>
+              <h3>🧠 Executive Summary</h3>
+              <p>
+                Your OT environment shows {getRiskLevel()} risk exposure with
+                critical vulnerabilities requiring immediate attention.
+              </p>
+            </div>
+
+            {/* SECTIONS */}
             <div style={styles.card}>
               <h3>🔍 Findings</h3>
               <pre>{getSection("Findings:")}</pre>
@@ -172,6 +194,16 @@ export default function Home() {
               <h3>✅ Recommendations</h3>
               <pre>{getSection("Recommendations:")}</pre>
             </div>
+
+            {/* CTA */}
+            <button style={styles.downloadBtn}>
+              📄 Generate Executive Report
+            </button>
+
+            {/* TRUST */}
+            <div style={styles.footer}>
+              Trusted for Energy, Utilities, Industrial OT & Smart Cities
+            </div>
           </>
         )}
       </div>
@@ -185,7 +217,7 @@ const styles = {
   app: {
     display: "flex",
     fontFamily: "Arial",
-    background: "#0f172a",
+    background: "linear-gradient(135deg, #020617, #0f172a)",
     color: "white",
     minHeight: "100vh",
   },
@@ -206,6 +238,7 @@ const styles = {
     padding: "20px",
     borderRadius: "10px",
     marginBottom: "20px",
+    transition: "0.3s",
   },
   textarea: {
     width: "100%",
@@ -224,18 +257,44 @@ const styles = {
     color: "white",
     cursor: "pointer",
   },
+  secondaryBtn: {
+    marginTop: "10px",
+    padding: "10px 15px",
+    background: "#334155",
+    border: "none",
+    borderRadius: "6px",
+    color: "white",
+    cursor: "pointer",
+  },
   loading: {
     marginTop: "10px",
   },
-  grid: {
+  topMetrics: {
     display: "flex",
     gap: "15px",
     marginBottom: "20px",
   },
-  metricCard: {
+  metricBox: {
     background: "#111827",
     padding: "15px",
     borderRadius: "8px",
     flex: 1,
+  },
+  progressBar: {
+    marginBottom: "20px",
+    background: "#1e293b",
+    borderRadius: "5px",
+  },
+  downloadBtn: {
+    padding: "12px 20px",
+    background: "#22c55e",
+    border: "none",
+    borderRadius: "6px",
+    color: "white",
+    cursor: "pointer",
+  },
+  footer: {
+    marginTop: "30px",
+    opacity: 0.6,
   },
 };
